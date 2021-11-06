@@ -1,0 +1,2 @@
+add_library(golib board.cpp chess.cpp)
+target_include_directories(golib PRIVATE ${CMAKE_SOURCE_DIR}/include)
