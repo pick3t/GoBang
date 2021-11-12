@@ -22,7 +22,6 @@ class Board {
         uint8_t BoardColLen;
         uint16_t BoardTotalChess;
         vector<vector<Chess*>> board;
-        bool BoardIsFull();
     public:
         Board(uint8_t maxRowLen, uint8_t maxColLen):BoardRowLen(maxRowLen), BoardColLen(maxColLen),
             board(BoardRowLen, vector<Chess*>(BoardColLen))
@@ -32,7 +31,7 @@ class Board {
             {
                 for (int j = 0; j < BoardColLen; j++)
                 {
-                    board[i][j] = new Chess(i, j);
+                    board[i][j] = new Chess(i, j, COLOR_MAX);
                 }
             }
         }
@@ -41,6 +40,7 @@ class Board {
         void BoardDisplay();
         uint8_t BoardGetRowLen();
         uint8_t BoardGetColLen();
+        bool BoardIsFull();
 };
 
 #endif

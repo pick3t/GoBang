@@ -15,10 +15,8 @@ typedef enum color
 class Chess
 {
 public:
-    Chess(uint8_t rowIndex, uint8_t colIndex):ChessRowIndex(rowIndex),ChessColIndex(colIndex)
-    {
-        ChessColor = COLOR_MAX;
-    }
+    Chess(uint8_t rowIndex, uint8_t colIndex, Color color):ChessRowIndex(rowIndex),ChessColIndex(colIndex),
+        ChessColor(color) { }
 
     uint8_t ChessGetRowIndex() const { return ChessRowIndex; }
     uint8_t ChessGetColIndex() const { return ChessColIndex; }

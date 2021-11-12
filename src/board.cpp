@@ -64,12 +64,19 @@ uint32_t Board::BoardPlaceChess(Chess *chess)
 
 void Board::BoardDisplay()
 {
+    printf("   ");
+    for (int i = 0; i < BoardColLen; i++) {
+        printf("%02d ", i);
+    }
+    printf("\n");
+
     for (int i = 0; i < BoardRowLen; i++)
     {
+        printf("%02d ", i);
         for (int j = 0; j < BoardColLen; j++)
         {
-            printf("%c ", board[i][j]->ChessConvertColorToIcon());
+            printf("%c  ", board[i][j]->ChessConvertColorToIcon());
         }
-        printf("\n");
+        printf("\n\n");
     }
 }
