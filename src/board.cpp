@@ -1,81 +1,71 @@
 #include <cstdint>
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include "board.hpp"
 
 using namespace std;
+using namespace ChessGame;
 
-Board::~Board()
+Board::Board(uint8_t maxRow, uint8_t maxCol) : maxRow(maxRow), maxCol(maxCol), board(maxRow, vector<std::shared_ptr<Chess>>(maxCol))
 {
-    for (int i = 0; i < BoardRowLen; i++)
+    totalChess = 0;
+    for (auto &row : board)
     {
-        for (int j = 0; j < BoardColLen; j++)
+        for (auto &col : row)
         {
-            delete board[i][j];
+            col = std::make_shared<Chess>();
         }
     }
 }
 
-uint8_t Board::BoardGetRowLen()
+Board::~Board()
 {
-    return BoardRowLen;
 }
 
-uint8_t Board::BoardGetColLen()
+bool Board::IsFull()
 {
-    return BoardColLen;
+    return totalChess >= MAX_CHESS_NUM;
 }
 
-bool Board::BoardIsFull()
+uint32_t Board::PlaceChess(std::shared_ptr<Chess> chess)
 {
-    return BoardTotalChess >= MAX_CHESS_NUM;
-}
+    if (IsFull())
+    {
+        return CHESS_FULL;
+    }
 
-uint32_t Board::BoardPlaceChess(Chess *chess)
-{
-    uint8_t ChessRowIndex = chess->ChessGetRowIndex();
-    uint8_t ChessColIndex = chess->ChessGetColIndex();
-
-    if (ChessRowIndex < 0 || ChessRowIndex >= BoardRowLen)
+    if (chess->row >= maxRow || chess->col >= maxCol)
     {
         return CHESS_OUT_OF_BOUNDS;
     }
-    else if (ChessColIndex < 0 || ChessColIndex >= BoardColLen)
+    else if (board[chess->row][chess->col]->color != Color::COLOR_DEFAULT)
     {
-        return CHESS_OUT_OF_BOUNDS;
-    }
-    else if (board[ChessRowIndex][ChessColIndex]->ChessGetColor() != COLOR_MAX)
-    {
-        return CHESS_PLACE_FAIL;
+        return CHESS_PLACE_TAKEN;
     }
 
-    delete board[ChessRowIndex][ChessColIndex];
-    board[ChessRowIndex][ChessColIndex] = chess;
-    BoardTotalChess++;
-
-    if (BoardIsFull())
-    {
-        return CHESS_NO_PLACE;
-    }
+    board[chess->row][chess->col] = std::move(chess);
+    totalChess++;
 
     return CHESS_PLACE_SUCCESS;
 }
 
-void Board::BoardDisplay()
+void Board::Display()
 {
     printf("   ");
-    for (int i = 0; i < BoardColLen; i++) {
+    for (int i = 0; i < maxCol; i++)
+    {
         printf("%02d ", i);
     }
     printf("\n");
 
-    for (int i = 0; i < BoardRowLen; i++)
+    for (int i = 0; i < maxRow; i++)
     {
         printf("%02d ", i);
-        for (int j = 0; j < BoardColLen; j++)
+        for (int j = 0; j < maxCol; j++)
         {
-            printf("%c  ", board[i][j]->ChessConvertColorToIcon());
+            printf("%s  ", board[i][j]->Color2Icon());
         }
         printf("\n\n");
     }

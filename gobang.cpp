@@ -9,8 +9,10 @@
 #define MAX_COL_LEN 18
 
 using namespace std;
+using namespace ChessGame;
 
-typedef enum turn {
+typedef enum turn
+{
     TURN_BLACK,
     TURN_WHITE,
     TURN_MAX,
@@ -18,29 +20,48 @@ typedef enum turn {
 
 Color GetColorFromTurn(Turn turn)
 {
-    return turn == TURN_BLACK ? COLOR_BLACK : COLOR_WHITE;
+    return turn == TURN_BLACK ? Color::COLOR_BLACK : Color::COLOR_WHITE;
 }
 
 int main()
 {
     cout << "start" << endl;
-    Board *board = new Board(MAX_ROW_LEN, MAX_COL_LEN);
+    Board board = Board(MAX_ROW_LEN, MAX_COL_LEN);
+    board.Display();
 
-    while (!board->BoardIsFull()) {
-        for (int i = TURN_BLACK; i < TURN_MAX; i++) {
+    while (!board.IsFull())
+    {
+        int i = TURN_BLACK;
+        while (i != TURN_MAX)
+        {
             int row, col;
+            cout << "row: ";
             cin >> row;
+            cout << "col: ";
             cin >> col;
+
             Color color = GetColorFromTurn((Turn)i);
-            Chess *chess = new Chess(static_cast<uint8_t>(row), static_cast<uint8_t>(col), color);
-            uint32_t ret = board->BoardPlaceChess(chess);
-            if (ret != CHESS_PLACE_SUCCESS) {
+            uint32_t ret = board.PlaceChess(std::make_shared<Chess>(row, col, color));
+            if (ret != CHESS_PLACE_SUCCESS)
+            {
+                if (ret == CHESS_OUT_OF_BOUNDS) {
+                    cout << "Chess is out of board, please input valid index.\n";
+                    continue;
+                }
+
+                if (ret == CHESS_PLACE_TAKEN) {
+                    cout << "This place already has a chess on it, please choose another location.\n";
+                    continue;
+                }
+
                 return 1;
             }
-            board->BoardDisplay();
+
+            board.Display();
+            i++;
         }
     }
-    delete board;
+
     cout << "end" << endl;
     return 0;
 }

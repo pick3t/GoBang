@@ -1,36 +1,26 @@
 #include <cstdint>
 #include <iostream>
+#include <unordered_map>
 
 #include "chess.hpp"
+#include "enum_str_map.hpp"
 
-using namespace std;
+using namespace ChessGame;
+using namespace CommonTools;
 
-void Chess::ChessSetColor(Color color)
+std::unordered_map<Color, const char*> g_color2Str;
+auto g_color2StrMap = map_init(g_color2Str)
+    (Color::COLOR_BLACK, "x")
+    (Color::COLOR_WHITE, "o")
+    (Color::COLOR_DEFAULT, "+")
+;
+
+const char* Chess::Color2Icon() const
 {
-    ChessColor = color;
+    return g_color2StrMap[this->color];
 }
 
-void Chess::ChessDisplay()
+std::ostream& operator<<(std::ostream& os, const Chess& chess)
 {
-    cout << +ChessRowIndex << endl;
-    cout << +ChessColIndex << endl;
-    cout << ChessColor << endl;
-}
-
-Icon Chess::ChessConvertColorToIcon()
-{
-    Icon icon = '+';
-    switch (ChessColor)
-    {
-    case COLOR_BLACK:
-        icon = 'x';
-        break;
-    case COLOR_WHITE:
-        icon = 'o';
-        break;
-    default:
-        break;
-    }
-
-    return icon;
+    return os << chess.Color2Icon();
 }
