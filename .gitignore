@@ -2,5 +2,6 @@
 .vscode
 *.exe
 build
+output
 CMakeFiles
 CMakeCache.txt
