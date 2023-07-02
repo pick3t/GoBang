@@ -1,57 +1,75 @@
+#include "board.hpp"
+
 #include <cstdint>
 #include <iostream>
 #include <vector>
 #include <memory>
 
-#include "board.hpp"
+#include "ret_code.hpp"
+#include "chess.hpp"
+#include "container.hpp"
 
 using namespace std;
 using namespace ChessGame;
 
-Board::Board(uint8_t maxRow, uint8_t maxCol) : maxRow(maxRow), maxCol(maxCol), board(maxRow, vector<std::shared_ptr<Chess>>(maxCol))
+template <class _Container>
+Board<_Container>::Board(uint8_t maxRow, uint8_t maxCol) :
+maxRow(maxRow), maxCol(maxCol), maxMember(maxRow * maxCol), totalMember(0), board(maxRow, vector<std::shared_ptr<_Container>>(maxCol))
 {
-    totalChess = 0;
-    for (auto &row : board)
+    for (auto i = 0; i < maxRow; ++i)
     {
-        for (auto &col : row)
+        for (auto j = 0; j < maxCol; ++j)
         {
-            col = std::make_shared<Chess>();
+            board[i][j] = std::make_shared<_Container>(i, j);
         }
     }
 }
 
-Board::~Board()
+template <class _Container>
+Board<_Container>::Board() : Board(DEFAULT_MAX_ROW, DEFAULT_MAX_COL)
 {
 }
 
-bool Board::IsFull()
+template <class _Container>
+Board<_Container>::~Board()
 {
-    return totalChess >= MAX_CHESS_NUM;
+    for (auto &row : board)
+    {
+        for (auto &col : row)
+        {
+            col->Remove();
+            col = nullptr;
+        }
+    }
 }
 
-uint32_t Board::PlaceChess(std::shared_ptr<Chess> chess)
+template <class _Container>
+template <class _Contained>
+uint32_t Board<_Container>::Place(uint8_t row, uint8_t col, std::shared_ptr<_Contained> chess)
 {
-    if (IsFull())
+    if (row >= maxRow || col >= maxCol)
     {
-        return CHESS_FULL;
+        return POSITION_OUT_OF_BOUNDS;
     }
 
-    if (chess->row >= maxRow || chess->col >= maxCol)
+    std::shared_ptr<_Container> container = board[row][col];
+    if (!container)
     {
-        return CHESS_OUT_OF_BOUNDS;
-    }
-    else if (board[chess->row][chess->col]->color != Color::COLOR_DEFAULT)
-    {
-        return CHESS_PLACE_TAKEN;
+        return POSITION_INVALID;
     }
 
-    board[chess->row][chess->col] = std::move(chess);
-    totalChess++;
+    uint32_t ret = container->Contain(chess);
+    if (ret != RC_OK) {
+        return POSITION_OCCUPIED;
+    }
 
-    return CHESS_PLACE_SUCCESS;
+    totalMember++;
+
+    return PLACE_SUCCESS;
 }
 
-void Board::Display()
+template <class _Container>
+void Board<_Container>::Display()
 {
     printf("   ");
     for (int i = 0; i < maxCol; i++)
@@ -65,8 +83,12 @@ void Board::Display()
         printf("%02d ", i);
         for (int j = 0; j < maxCol; j++)
         {
-            printf("%s  ", board[i][j]->Color2Icon());
+            std::cout << *board[i][j] << " ";
         }
         printf("\n\n");
     }
 }
+
+/* instantiate of needed template class */
+template class Board<ChessContainer<Chess>>;
+template uint32_t Board<ChessContainer<Chess>>::Place(uint8_t, uint8_t, std::shared_ptr<Chess>);

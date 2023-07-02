@@ -1,8 +1,9 @@
+#include "chess.hpp"
+
 #include <cstdint>
 #include <iostream>
 #include <unordered_map>
 
-#include "chess.hpp"
 #include "enum_str_map.hpp"
 
 using namespace ChessGame;
@@ -20,7 +21,7 @@ const char* Chess::Color2Icon() const
     return g_color2StrMap[this->color];
 }
 
-std::ostream& operator<<(std::ostream& os, const Chess& chess)
-{
-    return os << chess.Color2Icon();
-}
+// std::ostream& operator<<(std::ostream& os, const Chess& chess)
+// {
+//     return os << chess.Color2Icon();
+// }
