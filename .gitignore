@@ -1,7 +1,5 @@
-*.o
 .vscode
-*.exe
-build
 output
-CMakeFiles
-CMakeCache.txt
+compile_commands.json
+.ccls*
+.clangd*

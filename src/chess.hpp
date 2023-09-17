@@ -16,21 +16,20 @@ enum class Color : uint8_t
 
 class Chess
 {
+    friend std::ostream& operator<<(std::ostream& os, const Chess& chess)
+    {
+        return os << chess.Color2Icon();
+    }
+
     public:
-        uint8_t row;
-        uint8_t col;
         Color color;
 
-        explicit Chess():row(0), col(0), color(Color::COLOR_DEFAULT) { };
-        explicit Chess(uint8_t rowIndex, uint8_t colIndex, Color color):row(rowIndex), col(colIndex),
-            color(color) { }
-
-        friend std::ostream& operator<<(std::ostream& os, const Chess& chess);
-
+        explicit Chess():color(Color::COLOR_DEFAULT) { };
+        explicit Chess(Color color):color(color) { };
         const char* Color2Icon() const;
 };
 
-std::ostream& operator<<(std::ostream& os, const Chess& chess);
+// std::ostream& operator<<(std::ostream& os, const Chess& chess);
 
 }
 

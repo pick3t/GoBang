@@ -1,5 +1,5 @@
 namespace CommonTools {
-/* T needs to be a map type */
+
 template<typename MapType>
 struct map_init_helper
 {
