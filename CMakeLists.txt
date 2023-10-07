@@ -17,3 +17,14 @@ target_link_libraries(${PROJECT_NAME} golib)
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+add_custom_target(insrcclean
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/CMakeFiles"
+    COMMAND ${CMAKE_COMMAND} -E remove -f "${CMAKE_BINARY_DIR}/Makefile"
+    COMMAND ${CMAKE_COMMAND} -E remove -f "${CMAKE_BINARY_DIR}/CMakeCache.txt"
+    COMMAND ${CMAKE_COMMAND} -E remove -f "${CMAKE_BINARY_DIR}/cmake_install.cmake"
+    COMMAND find "${CMAKE_BINARY_DIR}" -name "CMakeFiles" -type d -prune -exec rm -rf {} \\\;
+    COMMAND find "${CMAKE_BINARY_DIR}" -type f -name "Makefile" -exec rm -f {} \\\;
+    COMMAND find "${CMAKE_BINARY_DIR}" -type f -name "CMakeCache.txt" -exec rm -f {} \\\;
+    COMMAND find "${CMAKE_BINARY_DIR}" -type f -name "cmake_install.cmake" -exec rm -f {} \\\;
+)
