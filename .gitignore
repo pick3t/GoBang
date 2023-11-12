@@ -3,3 +3,4 @@ output
 compile_commands.json
 .ccls*
 .clangd*
+*.o
